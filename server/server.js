@@ -32,4 +32,16 @@ wss.on('connection', (socket) => {
         console.log(connectedClients);
         console.log(`remove connection: ${socket.id}\n`);
     });
+
+    socket.on('message',  (message) => {
+        const data = JSON.parse(message);
+
+        if (data.type === 'draw_update'){
+            wss.clients.forEach((client) => {
+                if (client !== socket && client.readyState === WebSocket.OPEN){
+                    client.send(JSON.stringify(data));
+                }
+            });
+        }
+    });
 });

@@ -25,7 +25,18 @@ canvas.addEventListener('mouseup', (e) => {
 
 canvas.addEventListener('mousemove', (e) => {
     if (!allowDraw) return; //spinlock
-    draw(context, color, e);
+    draw(context, color, e.clientX, e.clientY);
+
+    //send information of drawing to server
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            from_id: id,
+            type: 'draw_update',
+            x: e.clientX,
+            y: e.clientY,
+            color: color
+        }));
+    }
 });
 
 socket.onmessage = (event) => {
@@ -35,11 +46,17 @@ socket.onmessage = (event) => {
         id = data.id;
         color = data.color;
     }
+
+    if(data.type === 'draw_update'){
+        console.log("get from draw_updates");
+        draw(context, data.color, data.x, data.y);
+    }
 }
 
-function draw(context, color, e){
+function draw(context, color, x, y){
+    console.log("drawinggg!");
     context.strokeStyle = color;
-    context.lineTo(e.clientX, e.clientY);
+    context.lineTo(x, y);
     context.stroke();
 }
 

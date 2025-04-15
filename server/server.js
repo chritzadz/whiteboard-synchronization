@@ -7,14 +7,17 @@ let clientIdCounter = 1;
 
 wss.on('connection', (socket) => {
     socket.id = `user-${clientIdCounter++}`;
+    let randomColor = '#' + ((Math.random() * 0xfffff * 1000000).toString(16)).slice(0, 6);
     connectedClients.push(socket.id);
 
     //logs
     console.log(connectedClients);
+    console.log(randomColor);
 
     socket.send(JSON.stringify({
         type: 'client_id',
-        id: socket.id
+        id: socket.id,
+        color: randomColor
     }));
     console.log(`new connection: ${socket.id}\n`);
 

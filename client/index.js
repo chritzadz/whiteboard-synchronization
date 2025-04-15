@@ -25,16 +25,22 @@ canvas.addEventListener('mouseup', (e) => {
 
 canvas.addEventListener('mousemove', (e) => {
     if (!allowDraw) return; //spinlock
-    context.lineTo(e.clientX, e.clientY);
-    context.stroke();
+    draw(context, color, e);
 });
 
 socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    if(data.type === 'assign_id') {
+    if(data.type === 'client_id') {
         id = data.id;
+        color = data.color;
     }
+}
+
+function draw(context, color, e){
+    context.strokeStyle = color;
+    context.lineTo(e.clientX, e.clientY);
+    context.stroke();
 }
 
 

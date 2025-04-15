@@ -15,23 +15,35 @@ window.addEventListener('resize', resizeCanvas);
 let allowDraw = false;
 canvas.addEventListener('mousedown', (e) => {
     allowDraw = true;
-    context.beginPath();
-    context.moveTo(e.clientX, e.clientY)
+    startPath(context, e.clientX, e.clientY);
+
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            type: 'draw_start',
+            x: e.clientX,
+            y: e.clientY,
+            color: color
+        }));
+    }
 });
 
 canvas.addEventListener('mouseup', (e) => {
     allowDraw = false;
+
+    if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+            type: 'draw_end'
+        }));
+    }
 });
 
 canvas.addEventListener('mousemove', (e) => {
     if (!allowDraw) return; //spinlock
     draw(context, color, e.clientX, e.clientY);
 
-    //send information of drawing to server
     if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
-            from_id: id,
-            type: 'draw_update',
+            type: 'draw_start_move',
             x: e.clientX,
             y: e.clientY,
             color: color
@@ -47,9 +59,16 @@ socket.onmessage = (event) => {
         color = data.color;
     }
 
-    if(data.type === 'draw_update'){
-        console.log("get from draw_updates");
+    if (data.type === 'draw_start') {
+        startPath(context, data.x, data.y);
+    }
+
+    if (data.type === 'draw_start_move') {
         draw(context, data.color, data.x, data.y);
+    }
+
+    if (data.type === 'draw_end') {
+        closePath(context);
     }
 }
 
@@ -58,6 +77,15 @@ function draw(context, color, x, y){
     context.strokeStyle = color;
     context.lineTo(x, y);
     context.stroke();
+}
+
+function startPath(context, x, y){
+    context.beginPath();
+    context.moveTo(x, y);
+}
+
+function closePath(context){
+    context.closePath();
 }
 
 

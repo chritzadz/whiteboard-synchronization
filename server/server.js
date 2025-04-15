@@ -36,7 +36,7 @@ wss.on('connection', (socket) => {
     socket.on('message',  (message) => {
         const data = JSON.parse(message);
 
-        if (data.type === 'draw_update'){
+        if (data.type === 'draw_start' || data.type === 'draw_start_move' || data.type === 'draw_end'){
             wss.clients.forEach((client) => {
                 if (client !== socket && client.readyState === WebSocket.OPEN){
                     client.send(JSON.stringify(data));

@@ -22,4 +22,10 @@ Communication between client and server is already supported by WebSocket provid
 All draw history (as long as the server lifetime) will be recorded in a drawHistory[] array which holds all drawing events happened during the lifetime of the server. Hence, everytime a new client madea connection, it can have an updated filled canvas.
 
 ## Run Project
-1. 
+1. git clone https://github.com/chritzadz/whiteboard-synchronization.git
+2. run npm install
+3. run npm install http-server --save-dev
+4. run npm install concurrently --save-dev
+5. npm start
+
+*Before executing split the browser into multiple screen first, since resizing will cause the annotation to dissapear (to recover pleas reload again the browser).

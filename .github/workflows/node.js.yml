@@ -29,26 +29,39 @@ jobs:
     
     #server-side
     - name: Install server dependencies
-      run: npm ci
+      run: |
+        cd server
+        npm ci
+      
       working-directory: ./server
 
     - name: Build server (if needed)
-      run: npm run build --if-present
+      run: |
+        cd server
+        npm run build --if-present
       working-directory: ./server
 
-    - name: Test server
-      run: npm test
+    - name: Test server 
+      run: |
+        cd server
+        npm test
       working-directory: ./server
 
     #client-side
-    - name: Install server dependencies
-      run: npm ci
+    - name: Install client dependencies
+      run: |
+        cd client
+        npm ci
       working-directory: ./client
 
-    - name: Build server (if needed)
-      run: npm run build --if-present
+    - name: Build client (if needed)
+      run: |
+        cd client
+        npm run build --if-present
       working-directory: ./client
 
-    - name: Test server
-      run: npm test
+    - name: Test client
+      run: |
+        cd client
+        npm test
       working-directory: ./client

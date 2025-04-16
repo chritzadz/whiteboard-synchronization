@@ -1,6 +1,13 @@
-function resizeCanvas(){
+function resizeCanvas(client){
     canvas.width = window.innerWidth - 10;
     canvas.height = window.innerHeight - 10;
+
+    if (socket.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({
+            type: 'request_draw_history',
+            from_id: id
+        }));
+    }
 }
 
 const socket = new WebSocket('ws://localhost:8080');
@@ -8,7 +15,7 @@ const canvas = document.getElementById('whiteboard');
 const context = canvas.getContext('2d');
 let id = null;
 let color = null;
-resizeCanvas();
+
 
 window.addEventListener('resize', resizeCanvas);
 
@@ -57,6 +64,8 @@ socket.onmessage = (event) => {
     if(data.type === 'client_id') {
         id = data.id;
         color = data.color;
+
+        resizeCanvas(socket);
     }
 
     if (data.type === 'draw_start') {

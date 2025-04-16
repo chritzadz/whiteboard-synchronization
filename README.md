@@ -12,9 +12,13 @@ optional: possible WebSocket reconnection
 The whiteboard will implement Multiple Client/Single Service software architecture. The implementation currently only provide a single interface for the whiteboard, with multiple clients can access the whiteboard and colloborate in the whiteboard.
 
 ## Synchronization Solution
-As to let multiple client collaborate on a single interface, I implemented a standard solution. I seperated 3 main events of drawing into:
-1. draw_start
-2. draw_start_move
-3. draw_end
+To enable multiple clients collaborate on a shared interface (whiteboard), the solution a simple event-driven solution. There is three seperated drawing process, by which is driven by mouse inputs.
+1. draw_start: initialize drawing action (driven by mousedown)
+2. draw_start_move: draw on canvas (driven by mousedown and mousemove)
+3. draw_end: complete drawing action (driven by mouseup)
 
-each of the event in the client will be sent to the server. and then server will process and send to all the clients (except sending back to the same client sending the JSON).
+Communication between client and server is already supported by WebSocket providing full-duplex communication. Each of the events will be passed by the client to the server. The server process the event and will broadcast to the current connected clients (excluding the client that initated the event). This ensures the real-time affect among the server lifetime. 
+
+All draw history (as long as the server lifetime) will be recorded in a drawHistory[] array which holds all drawing events happened during the lifetime of the server. Hence, everytime a new client madea connection, it can have an updated filled canvas.
+
+

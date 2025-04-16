@@ -27,6 +27,31 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    #server-side
+    - name: Install server dependencies
+      run: npm ci --prefix ./server
+
+    - name: Build server (if needed)
+      run: npm run build --if-present --prefix ./server
+
+    - name: Test server
+      run: npm test --prefix ./server
+
+    #client-side
+    - name: Install client dependencies
+      run: |
+        cd client
+        npm ci
+      working-directory: ./client
+
+    - name: Build client (if needed)
+      run: |
+        cd client
+        npm run build --if-present
+      working-directory: ./client
+
+    - name: Test client
+      run: |
+        cd client
+        npm test
+      working-directory: ./client

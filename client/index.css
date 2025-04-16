@@ -1,0 +1,17 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+.notif_box {
+    position:absolute;
+    background: #cf2121;
+    top: 0;
+    right: 0;
+    height: 200px;
+    width: 200px;
+    color: #000000;
+    overflow-y: auto;
+}

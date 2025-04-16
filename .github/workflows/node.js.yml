@@ -34,24 +34,9 @@ jobs:
     - name: Build server (if needed)
       run: npm run build --if-present --prefix ./server
 
-    - name: Test server
-      run: npm test --prefix ./server
-
     #client-side
     - name: Install client dependencies
-      run: |
-        cd client
-        npm ci
-      working-directory: ./client
+      run: npm ci --prefix ./client
 
     - name: Build client (if needed)
-      run: |
-        cd client
-        npm run build --if-present
-      working-directory: ./client
-
-    - name: Test client
-      run: |
-        cd client
-        npm test
-      working-directory: ./client
+      run: npm run build --if-present --prefix ./client

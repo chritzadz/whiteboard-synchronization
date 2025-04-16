@@ -7,11 +7,33 @@ html, body {
 
 .notif_box {
     position:absolute;
-    background: #cf2121;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
     height: 200px;
     width: 200px;
+    border: black;
     color: #000000;
     overflow-y: auto;
+}
+
+.notification {
+    background: #ffffff;
+    color: #000000;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: Arial;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    opacity: 0.8;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.8;
+    }
 }

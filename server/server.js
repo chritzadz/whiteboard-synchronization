@@ -2,6 +2,9 @@ const WebSocket = require('ws');
 
 const wss = new WebSocket.Server({port:8080});
 
+const JOIN_STATUS = "JOIN";
+const LEAVE_STATUS  = "LEAVE";
+
 let connectedClients = [];
 let drawHistory = [];
 let clientIdCounter = 1;
@@ -18,14 +21,17 @@ wss.on('connection', (socket) => {
         id: socket.id,
         color: randomColor
     }));
-    console.log(`new connection: ${socket.id}\n`);
 
+    postNotification(socket, JOIN_STATUS);
+    console.log('post notifications');
 
     socket.on('close', () => {
         let index = connectedClients.indexOf(socket.id);
         if(index > -1){
             connectedClients.splice(index, 1);
         }
+
+        postNotification(socket, LEAVE_STATUS);
     });
 
     socket.on('message',  (message) => {
@@ -50,5 +56,19 @@ function loadDrawing(client){
     //load drawing
     drawHistory.forEach((drawAction) => {
         client.send(JSON.stringify(drawAction));
+    });
+}
+
+function postNotification(client, status) {
+    let message_body = client.id + " " + status;
+    const notification = {
+        type: 'notification',
+        message: message_body
+    };
+
+    wss.clients.forEach((c) => {
+        if (c !== client && c.readyState === WebSocket.OPEN) {
+            c.send(JSON.stringify(notification));
+        }
     });
 }
